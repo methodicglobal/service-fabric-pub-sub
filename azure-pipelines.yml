@@ -1,8 +1,6 @@
 trigger:
   - master
 pr: none
-pool:
-  name: 'Meth HQ SF'
 variables:
   buildConfiguration: Release
   projectPaths: src/**/*.csproj
