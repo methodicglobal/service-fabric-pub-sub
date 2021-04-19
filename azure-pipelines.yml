@@ -2,7 +2,7 @@ trigger:
   - master
 pr: none
 pool:
-  name: Hosted Windows 2019 with VS2019
+  name: 'Meth HQ SF'
 variables:
   buildConfiguration: Release
   projectPaths: src/**/*.csproj
@@ -11,36 +11,44 @@ steps:
   - task: DotNetCoreCLI@2
     displayName: Test
     inputs:
-      command: test
-      projects: $(testProjectPaths)
+      command: 'test'
+      projects: '$(testProjectPaths)'
       arguments: '--configuration $(BuildConfiguration)'
   - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
-      command: restore
-      projects: $(projectPaths)
+      command: 'restore'
+      projects: '$(projectPaths)'
+      feedsToUse: 'select'
+      vstsFeed: '94e51229-bb21-4d05-8ec7-827b036f86cc'
+      noCache: true
   - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
-      projects: $(projectPaths)
+      command: 'build'
+      projects: '$(projectPaths)'
       arguments: '--configuration $(buildConfiguration)'
   - task: DotNetCoreCLI@2
     displayName: Pack
     inputs:
-      command: pack
-      packagesToPack: $(projectPaths)
+      command: 'pack'
+      packagesToPack: '$(projectPaths)'
       nobuild: true
+      versioningScheme: 'off'
   - task: NuGetToolInstaller@0
-    displayName: Use NuGet 4.9.3
+    displayName: Use NuGet 5.9.1
     inputs:
-      versionSpec: 4.9.3
+      versionSpec: '5.9.1'
   - task: NuGetCommand@2
     displayName: NuGet push
     inputs:
-      command: push
-      nuGetFeedType: external
-      publishFeedCredentials: Public Nuget
+      command: 'push'
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+      nuGetFeedType: 'internal'
+      publishVstsFeed: '94e51229-bb21-4d05-8ec7-827b036f86cc'
   - task: PublishBuildArtifacts@1
     displayName: Publish Artifact
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
