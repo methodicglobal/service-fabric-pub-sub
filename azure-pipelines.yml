@@ -15,6 +15,14 @@ steps:
       vstsFeed: '94e51229-bb21-4d05-8ec7-827b036f86cc'
       noCache: true
   - task: DotNetCoreCLI@2
+    displayName: Restore Tests
+    inputs:
+      command: 'restore'
+      projects: '$(testProjectPaths)'
+      feedsToUse: 'select'
+      vstsFeed: '94e51229-bb21-4d05-8ec7-827b036f86cc'
+      noCache: true
+  - task: DotNetCoreCLI@2
     displayName: Test
     inputs:
       command: 'test'
