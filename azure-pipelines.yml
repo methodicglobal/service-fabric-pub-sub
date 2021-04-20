@@ -7,12 +7,6 @@ variables:
   testProjectPaths: 'tests/**/*[Tt]ests/*.csproj'
 steps:
   - task: DotNetCoreCLI@2
-    displayName: Test
-    inputs:
-      command: 'test'
-      projects: '$(testProjectPaths)'
-      arguments: '--configuration $(BuildConfiguration)'
-  - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
       command: 'restore'
@@ -20,6 +14,12 @@ steps:
       feedsToUse: 'select'
       vstsFeed: '94e51229-bb21-4d05-8ec7-827b036f86cc'
       noCache: true
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: 'test'
+      projects: '$(testProjectPaths)'
+      arguments: '--configuration $(BuildConfiguration)'
   - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
@@ -33,7 +33,7 @@ steps:
       packagesToPack: '$(projectPaths)'
       nobuild: true
       versioningScheme: 'off'
-  - task: NuGetToolInstaller@0
+  - task: NuGetToolInstaller@1
     displayName: Use NuGet 5.9.1
     inputs:
       versionSpec: '5.9.1'
